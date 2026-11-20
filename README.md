@@ -4,6 +4,67 @@ A fictional electronics retailer with two separate React applications and a shar
 
 The supplied `insp/inspiration.png` informs both interfaces: navy header, a pale gray workspace, white panels, compact typography, teal data and restrained lavender accents. All application source is Java or JavaScript; no TypeScript.
 
+## Application screenshots
+
+Captured from the actual running applications backed by Spring Boot and MySQL, using fictional demo accounts and order data.
+
+### Customer storefront
+
+![NOVARA storefront with product search, category navigation and featured electronics](docs/screenshots/storefront-desktop.jpg)
+
+### Internal OMS
+
+![NOVARA OMS with database-derived revenue, order activity, best sellers and inventory alerts](docs/screenshots/admin-desktop.png)
+
+[View the screenshot gallery](docs/SCREENSHOTS.md) for checkout, order management, inventory and mobile layouts.
+
+## Architecture
+
+Two independent React applications share one modular Spring Boot API and one MySQL database. In Docker, each frontend is served by its own Nginx container; `/api` and `/media` requests are proxied to the backend.
+
+```mermaid
+flowchart TB
+  Customer[Customer browser] --> Store
+  Team[Admin / manager / staff browser] --> OMS
+
+  subgraph Compose[Docker Compose]
+    Store["Storefront · React + Nginx<br/>localhost:5174"]
+    OMS["OMS · React + Nginx<br/>localhost:5175"]
+
+    subgraph Backend["Spring Boot · Java 21 · localhost:8081"]
+      Security[JWT authentication + role authorization]
+      API[REST controllers + validated DTOs]
+      Services[Catalog / orders / inventory / payments / shipments]
+      Data[Spring Data JPA + SQL analytics]
+      Media[Catalog images + image upload service]
+      Security --> API
+      API --> Services
+      Services --> Data
+      API --> Media
+    end
+
+    Store -->|REST /api| Security
+    OMS -->|REST /api| Security
+    Store -->|Images /media| Media
+    OMS -->|Images /media| Media
+    Data -->|Transactions + stock locks| DB[(MySQL 8.4)]
+    Flyway[Flyway schema migrations] --> DB
+    DB --- DBVolume[(Persistent mysql-data volume)]
+    Media --- Uploads[(Persistent uploads volume)]
+  end
+
+  classDef client fill:#eeedfa,stroke:#8580b6,color:#11133f;
+  classDef service fill:#f5f6f8,stroke:#626779,color:#23263b;
+  classDef storage fill:#e6f5f2,stroke:#147d78,color:#155e59;
+  class Store,OMS client;
+  class Security,API,Services,Data,Media,Flyway service;
+  class DB,DBVolume,Uploads storage;
+```
+
+Checkout, payment simulation, stock movements and order history commit transactionally. The OMS reads the same records customers see in their account. Payments and carrier actions are simulated; no external payment processor or shipping provider is connected.
+
+See the [system architecture](docs/SYSTEM_ARCHITECTURE.md), [database ER diagram](docs/DATABASE_DESIGN.md) and [business workflows](docs/BUSINESS_WORKFLOWS.md) for implementation details.
+
 ## Local applications
 
 | Application  | URL                                   |
