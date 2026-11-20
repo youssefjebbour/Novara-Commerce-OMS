@@ -1,0 +1,11 @@
+.git
+.env
+.runtime
+.taste-skill
+node_modules
+**/node_modules
+**/dist
+**/target
+test-results
+playwright-report
+insp

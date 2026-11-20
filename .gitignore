@@ -1,0 +1,11 @@
+.env
+node_modules/
+dist/
+target/
+.runtime/
+uploads/
+test-results/
+playwright-report/
+.taste-skill/inspect/
+*.log
+.DS_Store

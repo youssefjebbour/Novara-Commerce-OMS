@@ -1,0 +1,33 @@
+{
+  "name": "novara-commerce",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "workspaces": [
+    "frontend/storefront",
+    "frontend/admin"
+  ],
+  "scripts": {
+    "dev:storefront": "npm run dev --workspace @novara/storefront",
+    "dev:admin": "npm run dev --workspace @novara/admin",
+    "build": "npm run build --workspaces",
+    "test:e2e": "playwright test",
+    "test:ui": "playwright test --project chromium",
+    "assets": "node scripts/fetch-assets.mjs"
+  },
+  "dependencies": {
+    "@fontsource/dm-sans": "5.2.8",
+    "axios": "1.21.1",
+    "lucide-react": "1.77.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-router-dom": "7.18.6"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "@vitejs/plugin-react": "6.3.0",
+    "prettier": "^3.10.1",
+    "prettier-plugin-java": "^2.12.0",
+    "vite": "8.3.8"
+  }
+}

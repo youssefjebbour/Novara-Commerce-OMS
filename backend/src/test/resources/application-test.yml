@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: ${TEST_DB_URL:jdbc:mysql://localhost:3307/novara_test?serverTimezone=UTC}
+  jpa:
+    properties:
+      hibernate.jdbc.time_zone: UTC
+app:
+  seed: false
